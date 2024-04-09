@@ -117,6 +117,19 @@ pub fn page(
                                         }
                                     }
                                 }
+                                div.toolbar_box {
+                                    form id="files_upload" action=(upload_action) method="POST" enctype="multipart/form-data" {
+                                        p { "Select files to upload" }
+                                        div {
+                                            @match &conf.uploadable_media_type {
+                                                Some(accept) => {input #files-input accept=(accept) type="file" name="file_to_upload" required="" multiple {}},
+                                                None => {input #files-input type="file" name="file_to_upload" required="" multiple {}}
+                                            }
+                                            button type="submit" { "Upload file" }
+                                        }                                            
+                                        div.progress_area {}
+                                    }                                    
+                                }
                             }
                             @if conf.mkdir_enabled {
                                 div.toolbar_box {
@@ -581,6 +594,7 @@ fn page_header(title: &str, file_upload: bool, favicon_route: &str, css_route: &
 
             link rel="icon" type="image/svg+xml" href={ (favicon_route) };
             link rel="stylesheet" href={ (css_route) };
+            link rel="stylesheet" href="upload.css";
 
             title { (title) }
 
@@ -648,6 +662,7 @@ fn page_header(title: &str, file_upload: bool, favicon_route: &str, css_route: &
                         };
                     }
                 </script>
+                <script src="upload.js" defer></script>
                 "#))
             }
         }
