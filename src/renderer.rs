@@ -122,13 +122,13 @@ pub fn page(
                                         p { "Select files to upload or drag it anywhere into the window" }
                                         div {
                                             @match &conf.uploadable_media_type {
-                                                Some(accept) => {input #files-input accept=(accept) type="file" name="file_to_upload" required="" multiple {}},
-                                                None => {input #files-input type="file" name="file_to_upload" required="" multiple {}}
+                                                Some(accept) => {input #files-input accept=(accept) type="file" name="files_to_upload" required="" multiple {}},
+                                                None => {input #files-input type="file" name="files_to_upload" required="" multiple {}}
                                             }
                                             button type="submit" hidden { "Upload file" }
-                                        }                                            
+                                        }
                                         div.progress_area {}
-                                    }                                    
+                                    }
                                 }
                             }
                             @if conf.mkdir_enabled {
