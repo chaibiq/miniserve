@@ -125,7 +125,7 @@ pub fn page(
                                                 Some(accept) => {input #files-input accept=(accept) type="file" name="file_to_upload" required="" multiple {}},
                                                 None => {input #files-input type="file" name="file_to_upload" required="" multiple {}}
                                             }
-                                            button type="submit" { "Upload file" }
+                                            button type="submit" hidden { "Upload file" }
                                         }                                            
                                         div.progress_area {}
                                     }                                    
