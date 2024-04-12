@@ -117,6 +117,19 @@ pub fn page(
                                         }
                                     }
                                 }
+                                div.toolbar_box {
+                                    form id="files_upload" action=(upload_action) method="POST" enctype="multipart/form-data" {
+                                        p { "Select files to upload or drag it anywhere into the window" }
+                                        div {
+                                            @match &conf.uploadable_media_type {
+                                                Some(accept) => {input #files-input accept=(accept) type="file" name="file_to_upload" required="" multiple {}},
+                                                None => {input #files-input type="file" name="file_to_upload" required="" multiple {}}
+                                            }
+                                            button type="submit" hidden { "Upload file" }
+                                        }                                            
+                                        div.progress_area {}
+                                    }                                    
+                                }
                             }
                             @if conf.mkdir_enabled {
                                 div.toolbar_box {
@@ -615,6 +628,17 @@ fn page_header(title: &str, file_upload: bool, favicon_route: &str, css_route: &
                 (PreEscaped(r#"
                 <script>
                     window.onload = function() {
+                        // progress bar
+                        const form = document.querySelector('#files_upload'),
+                        filesInput = document.querySelector('#files-input'),
+                        progressArea = document.querySelector('.progress_area');
+
+                        filesInput.onchange = function () {
+                            file_length = filesInput.files.length;
+                            filesInput.disabled = true;
+                            upload(filesInput.files);
+                        }                        
+
                         const dropContainer = document.querySelector('#drop-container');
                         const dragForm = document.querySelector('.drag-form');
                         const fileInput = document.querySelector('#file-input');
@@ -646,6 +670,83 @@ fn page_header(title: &str, file_upload: bool, favicon_route: &str, css_route: &
                             file_submit.submit();
                             dragForm.style.display = 'none';
                         };
+           
+                        let cancel_indexes = [];
+                        let file_count = 0;
+                        let file_length = 0;
+                        
+                        function upload(files) {
+                        
+                            let progress_container = document.querySelector('.progress_area');
+                            progress_container.innerHTML = '';
+                        
+                            let xhr_ = {};
+                        
+                            for (let i = 0; i < files.length; i++) {
+                        
+                                xhr_[i] = new XMLHttpRequest();
+                        
+                                let file = files[i];
+                                let div = document.createElement('div');
+                                div.classList.add('file_progress_list')
+                                div.innerHTML = `<div class='file_progress'> <div>${file.name} <span class='file_size'>${formatBytes(file.size)}</span> </div> 
+                                                <div class='file_progress_percent${i}'>0%</div></div>`;
+                                div.innerHTML += `<div class='file_progress'> <div class='file_progress_bar file_progress_bar${i}'></div>  
+                                                <div class='cancel${i}'><button onclick='cancel_item(${i})'>✖</button></div> </div>`;
+                        
+                                progress_container.append(div);
+                        
+                                var forms = new FormData();
+                                forms.append('file', file);
+                        
+                                xhr_[i].addEventListener('readystatechange', function (e) {
+                                    if (e.target.readyState == 4 && e.target.status == 200) {
+                                        document.querySelector('.cancel' + i).innerHTML = '✓';
+                                        file_count++;
+                                        console.log(files[i].name);
+                                        if (file_count == file_length) {
+                                            setTimeout(function () { window.location.reload() }, 3000);
+                                        }
+                                    }
+                                });
+                        
+                                xhr_[i].upload.myindex = i;
+                        
+                                xhr_[i].upload.addEventListener('progress', function (e) {
+                        
+                                    let index = e.target.myindex;
+                                    //check for cancel
+                                    if (cancel_indexes.includes(index)) xhr_[index].abort();
+                        
+                                    let prog = document.querySelector('.file_progress_percent' + index);
+                                    let progress_bar = document.querySelector('.file_progress_bar' + index);
+                                    let percent = Math.round((e.loaded / e.total) * 100);
+                                    progress_bar.style.width = percent + '%';
+                                    prog.innerHTML = percent + '%';
+                                });
+                        
+                                xhr_[i].open('post', form.action, true);
+                                xhr_[i].send(forms);
+                            }
+                        }
+                        
+                        function cancel_item(index) {
+                            cancel_indexes.push(index);
+                            document.querySelector('.cancel' + index).innerHTML = '✖';
+                            file_count++;
+                            if (file_count == file_length) {
+                                setTimeout(function () { window.location.reload() }, 3000);
+                            }
+                        }
+                        
+                        function formatBytes(bytes, decimals) {
+                            if (bytes == 0) return '0 Bytes';
+                            var k = 1024,
+                                dm = decimals || 2,
+                                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                                i = Math.floor(Math.log(bytes) / Math.log(k));
+                            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+                        }
                     }
                 </script>
                 "#))

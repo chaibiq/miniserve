@@ -464,6 +464,55 @@ th span.active span {
     margin-top: 4rem;
 }
 
+.file_progress {
+    padding-bottom: 3px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.progress_area button {
+    padding: .2rem !important;
+}
+
+.file_progress_bar {
+    display: flex;
+    background-color: #19abff;
+    border-radius: 2px;
+    width: 100%;
+    color: white;
+    margin: 5px;
+    height: 6px;
+}
+
+.file_size {
+    white-space: nowrap;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+
+.toolbar_box .progress_area {
+    display: block;
+    margin-top: 3px;
+    max-height: 30vh;
+    overflow-x: hidden;
+    font-size: .8rem;
+}
+
+.file_progress_list {
+    display: block !important;
+    max-width: 30rem;
+    margin-top: 4px;
+    margin-right: 3px;
+    padding: 5px;
+    border: 1px;
+    border-color: #cccccc;
+    border-width: thin;
+    border-style: solid;
+    border-radius: 10px;
+}
+
 @media (min-width: 900px) {
     .toolbar_box_group {
         display: flex;
