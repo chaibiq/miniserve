@@ -126,9 +126,9 @@ pub fn page(
                                                 None => {input #files-input type="file" name="file_to_upload" required="" multiple {}}
                                             }
                                             button type="submit" hidden { "Upload file" }
-                                        }                                            
+                                        }
                                         div.progress_area {}
-                                    }                                    
+                                    }
                                 }
                             }
                             @if conf.mkdir_enabled {
