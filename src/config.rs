@@ -101,6 +101,9 @@ pub struct MiniserveConfig {
     /// Enable file upload
     pub file_upload: bool,
 
+    /// Enable progress bar when upload files
+    pub progress_bar: bool,
+
     /// List of allowed upload directories
     pub allowed_upload_dir: Vec<String>,
 
@@ -300,6 +303,7 @@ impl MiniserveConfig {
             overwrite_files: args.overwrite_files,
             show_qrcode: args.qrcode,
             mkdir_enabled: args.mkdir_enabled,
+            progress_bar: args.progress_bar,
             file_upload: args.allowed_upload_dir.is_some(),
             allowed_upload_dir,
             uploadable_media_type,

@@ -166,6 +166,14 @@ pub struct CliArgs {
     #[arg(short = 'u', long = "upload-files", value_hint = ValueHint::FilePath, num_args(0..=1), value_delimiter(','), env = "MINISERVE_ALLOWED_UPLOAD_DIR")]
     pub allowed_upload_dir: Option<Vec<PathBuf>>,
 
+    /// Enable file uploading with progress-bar(and optionally specify for which directory)
+    #[arg(
+        short = 'B', 
+        long = "upload-files-with-progress-bar", 
+        env = "MINISERVE_ALLOWED_UPLOAD_DIR"
+    )]
+    pub progress_bar: bool,
+
     /// Enable creating directories
     #[arg(
         short = 'U',
